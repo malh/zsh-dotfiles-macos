@@ -33,7 +33,17 @@ install_packages() {
     return
   fi
 
-  brew install antidote starship neovim zsh-completions fzf
+  local pkg missing=()
+  for pkg in antidote starship neovim zsh-completions fzf; do
+    if ! brew list "$pkg" &>/dev/null; then
+      missing+=("$pkg")
+    fi
+  done
+
+  if [[ ${#missing[@]} -gt 0 ]]; then
+    echo "Installing: ${missing[*]}"
+    brew install "${missing[@]}"
+  fi
 }
 
 ensure_dirs() {
@@ -205,7 +215,8 @@ install_fzf_extras() {
     local fzf_install
     fzf_install="$(brew --prefix)/opt/fzf/install"
     if [[ -x "$fzf_install" ]]; then
-      "$fzf_install" --no-bash --no-fish --key-bindings --completion --no-update-rc
+      "$fzf_install" --no-bash --no-fish --key-bindings --completion --no-update-rc 2>&1 \
+        | grep -v "Already exists" | grep -v "Skipped" || true
     fi
   fi
 }
@@ -232,10 +243,11 @@ print_summary() {
     printf 'Visible in zsh dir: %s\n' "$BACKUP_INDEX_DIR/$TIMESTAMP"
     printf 'Latest backup link: %s\n' "$BACKUP_INDEX_DIR/latest"
     printf 'Merge suggestions: %s\n' "$MERGE_REPORT"
-  else
-    printf '\n[backup]\n'
-    printf 'No existing zsh config found to back up.\n'
   fi
+
+  printf '\n[done] Bootstrap complete.\n'
+  printf 'Start a new shell to pick up the config:\n\n'
+  printf '  exec zsh -l\n\n'
 }
 
 main() {
