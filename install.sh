@@ -7,7 +7,7 @@
 
 set -euo pipefail
 
-REPO_URL="${REPO_URL:-}"
+REPO_URL="${REPO_URL:-https://github.com/malh/zsh-dotfiles-macos.git}"
 BRANCH="${BRANCH:-main}"
 TARGET_DIR="${TARGET_DIR:-$HOME/.local/src/zsh-dotfiles}"
 

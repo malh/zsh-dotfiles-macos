@@ -3,7 +3,7 @@
 ## One-Line Remote Install
 
 ```sh
-curl -fsSL https://raw.githubusercontent.com/malh/zsh-dotfiles-macos/main/install.sh | REPO_URL=https://github.com/malh/zsh-dotfiles-macos.git bash
+curl -fsSL https://raw.githubusercontent.com/malh/zsh-dotfiles-macos/main/install.sh | bash
 ```
 
 Optional overrides:
@@ -14,7 +14,7 @@ Optional overrides:
 Example:
 
 ```sh
-curl -fsSL https://raw.githubusercontent.com/malh/zsh-dotfiles-macos/main/install.sh | REPO_URL=https://github.com/malh/zsh-dotfiles-macos.git BRANCH=main TARGET_DIR=$HOME/.local/src/zsh-dotfiles bash
+curl -fsSL https://raw.githubusercontent.com/malh/zsh-dotfiles-macos/main/install.sh | BRANCH=main TARGET_DIR=$HOME/.local/src/zsh-dotfiles bash
 ```
 
 This repository defines my zsh setup for macOS that is:
