@@ -14,6 +14,7 @@ BACKUP_BASE="${XDG_STATE_HOME:-$HOME/.local/state}/zsh/bootstrap-backups"
 TIMESTAMP="$(date +%Y%m%d-%H%M%S)"
 BACKUP_DIR="$BACKUP_BASE/$TIMESTAMP"
 MERGE_REPORT="$BACKUP_DIR/merge-suggestions.md"
+BACKUP_INDEX_DIR="$TARGET_ZSH_DIR/backups.d"
 BACKUP_CREATED=0
 
 ensure_brew() {
@@ -142,14 +143,14 @@ generate_merge_suggestions() {
     printf '# Merge Suggestions\n\n'
     printf 'Backup source: `%s`\n\n' "$BACKUP_DIR"
     printf 'Use this report to move prior customizations into the new module layout:\n\n'
-    printf '- `conf.d/00-env.zsh`: general exports and editor defaults\n'
-    printf '- `conf.d/05-secrets.zsh`: private tokens, keys, credentials\n'
-    printf '- `conf.d/10-options.zsh`: `setopt`, history settings\n'
-    printf '- `conf.d/20-path.zsh`: `PATH`, `path`, `fpath`\n'
-    printf '- `conf.d/30-plugins.zsh` + `antidote/plugins.txt`: plugin/completion config\n'
-    printf '- `conf.d/50-aliases.zsh`: aliases and shell functions\n'
-    printf '- `conf.d/70-tools.zsh`: tool init lines (`eval`, `source`, hook setup)\n'
-    printf '- `conf.d/99-local.zsh`: machine-specific overrides\n\n'
+    printf '%s\n' '- `conf.d/00-env.zsh`: general exports and editor defaults'
+    printf '%s\n' '- `conf.d/05-secrets.zsh`: private tokens, keys, credentials'
+    printf '%s\n' '- `conf.d/10-options.zsh`: `setopt`, history settings'
+    printf '%s\n' '- `conf.d/20-path.zsh`: `PATH`, `path`, `fpath`'
+    printf '%s\n' '- `conf.d/30-plugins.zsh` + `antidote/plugins.txt`: plugin/completion config'
+    printf '%s\n' '- `conf.d/50-aliases.zsh`: aliases and shell functions'
+    printf '%s\n' '- `conf.d/70-tools.zsh`: tool init lines (`eval`, `source`, hook setup)'
+    printf '%s\n\n' '- `conf.d/99-local.zsh`: machine-specific overrides'
   } > "$MERGE_REPORT"
 
   collect_merge_lines "Environment Exports -> 00-env or 05-secrets/99-local" \
@@ -209,6 +210,16 @@ install_fzf_extras() {
   fi
 }
 
+expose_backup_in_zdotdir() {
+  if [[ "$BACKUP_CREATED" -ne 1 ]]; then
+    return
+  fi
+
+  mkdir -p "$BACKUP_INDEX_DIR"
+  ln -sfn "$BACKUP_DIR" "$BACKUP_INDEX_DIR/$TIMESTAMP"
+  ln -sfn "$BACKUP_INDEX_DIR/$TIMESTAMP" "$BACKUP_INDEX_DIR/latest"
+}
+
 validate() {
   # Validate syntax after install so broken configs fail fast.
   ZDOTDIR="$TARGET_ZSH_DIR" zsh -n "$TARGET_ZSH_DIR/.zshrc" "$TARGET_ZSH_DIR/conf.d/"*.zsh
@@ -216,9 +227,13 @@ validate() {
 
 print_summary() {
   if [[ "$BACKUP_CREATED" -eq 1 ]]; then
+    printf '\n[backup]\n'
     printf 'Backup saved to: %s\n' "$BACKUP_DIR"
+    printf 'Visible in zsh dir: %s\n' "$BACKUP_INDEX_DIR/$TIMESTAMP"
+    printf 'Latest backup link: %s\n' "$BACKUP_INDEX_DIR/latest"
     printf 'Merge suggestions: %s\n' "$MERGE_REPORT"
   else
+    printf '\n[backup]\n'
     printf 'No existing zsh config found to back up.\n'
   fi
 }
@@ -234,6 +249,7 @@ main() {
   build_antidote_bundle
   install_fzf_extras
   generate_merge_suggestions
+  expose_backup_in_zdotdir
   validate
   print_summary
 }

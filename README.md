@@ -55,6 +55,9 @@ echo "$HISTFILE"
 Backup and merge notes:
 
 - Backups are stored under `~/.local/state/zsh/bootstrap-backups/<timestamp>/`
+- A visible index is created under `~/.config/zsh/backups.d/`
+  - `~/.config/zsh/backups.d/<timestamp>` -> symlink to that run's backup
+  - `~/.config/zsh/backups.d/latest` -> symlink to most recent backup
 - Bootstrap prints the exact backup path and merge report path on completion
 - Merge report file: `merge-suggestions.md`
 - Use it to migrate prior exports/options/aliases/functions into the new `conf.d/` modules
