@@ -28,7 +28,10 @@ mkdir -p "$(dirname "$TARGET_DIR")"
 if [[ -d "$TARGET_DIR/.git" ]]; then
   git -C "$TARGET_DIR" fetch origin
   git -C "$TARGET_DIR" checkout "$BRANCH"
-  git -C "$TARGET_DIR" pull --ff-only origin "$BRANCH"
+  git -C "$TARGET_DIR" pull --ff-only origin "$BRANCH" 2>/dev/null || {
+    echo "Fast-forward not possible — resetting local $BRANCH to origin/$BRANCH"
+    git -C "$TARGET_DIR" reset --hard "origin/$BRANCH"
+  }
 else
   git clone --branch "$BRANCH" --depth 1 "$REPO_URL" "$TARGET_DIR"
 fi
