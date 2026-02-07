@@ -1,0 +1,11 @@
+# ---
+# file: ".gitignore"
+# purpose: "Ignore generated, local, and secret files for this zsh setup."
+# format: "gitignore"
+# ---
+
+conf.d/05-secrets.zsh
+conf.d/99-local.zsh
+antidote/.zsh_plugins.zsh
+**/zcompdump*
+.DS_Store

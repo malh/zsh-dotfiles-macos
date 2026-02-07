@@ -1,0 +1,43 @@
+# ---
+# file: "antidote/plugins.txt"
+# purpose: "Antidote plugin source list used to generate static bundle."
+# format: "plain-text list"
+# ---
+
+
+# Autosuggestions based on command history
+# Usage: Automatic - suggested commands appear in gray, press → to accept
+zsh-users/zsh-autosuggestions
+
+# Additional completions for zsh
+# Usage: Automatic - provides completions for 200+ commands
+zsh-users/zsh-completions
+
+# History substring search
+# Usage: Type any part of a previous command, then ↑/↓ to cycle through matches
+zsh-users/zsh-history-substring-search
+
+# Fast, feature-rich prompt theme with git integration
+# Usage: Run 'p10k configure' to customize after install
+romkatv/powerlevel10k
+
+# Automatically insert matching pairs of brackets/quotes
+# Usage: Automatic - type opening char, closing pair inserted; backspace removes both
+hlissner/zsh-autopair
+
+# Real-time syntax highlighting
+# Usage: Automatic - valid commands green, invalid red, existing paths underlined
+zsh-users/zsh-syntax-highlighting
+
+# Smart directory jumping based on frecency (frequency + recency)
+# Usage: z <partial-name> to jump; z -l <query> to list matches
+agkozak/zsh-z
+
+# Reminds you to use aliases instead of full commands
+# Usage: Automatic - suggests alias when you type full command
+MichaelAquilina/zsh-you-should-use
+
+# Enhanced tab completion with fuzzy search
+# Usage: Tab for completion, then Ctrl-n/p or arrows to navigate, Enter to select
+# Requires: brew install fzf
+Aloxaf/fzf-tab

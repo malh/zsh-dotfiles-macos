@@ -1,0 +1,22 @@
+# ---
+# file: "starship/starship.toml"
+# purpose: "Prompt configuration for Starship when loaded from conf.d/70-tools.zsh."
+# format: "toml"
+# ---
+
+add_newline = false
+
+[character]
+success_symbol = "[>](green)"
+error_symbol = "[>](red)"
+
+[directory]
+truncation_length = 3
+truncate_to_repo = false
+
+[git_branch]
+symbol = "git:"
+
+[cmd_duration]
+min_time = 500
+format = "took [$duration]($style) "
