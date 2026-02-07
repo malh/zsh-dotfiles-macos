@@ -1,4 +1,21 @@
-# ZSH Dotfile Setup (by mal_h)
+# My ZSH Dotfile Setup
+
+## One-Line Remote Install
+
+```sh
+curl -fsSL https://raw.githubusercontent.com/malh/zsh-dotfiles-macos/main/install.sh | REPO_URL=https://github.com/malh/zsh-dotfiles-macos.git bash
+```
+
+Optional overrides:
+
+- `BRANCH=<branch-name>`
+- `TARGET_DIR=<clone-path>`
+
+Example:
+
+```sh
+curl -fsSL https://raw.githubusercontent.com/malh/zsh-dotfiles-macos/main/install.sh | REPO_URL=https://github.com/malh/zsh-dotfiles-macos.git BRANCH=main TARGET_DIR=$HOME/.local/src/zsh-dotfiles bash
+```
 
 This repository defines my zsh setup for macOS that is:
 
@@ -84,25 +101,6 @@ If you do not use `gh`, create the repo in GitHub UI and then:
 git remote add origin git@github.com:<your-user>/<your-repo>.git
 git branch -M main
 git push -u origin main
-```
-
-## One-Line Remote Install
-
-This repo includes `install.sh` for a curl-based install.
-
-```sh
-curl -fsSL https://raw.githubusercontent.com/<your-user>/<your-repo>/main/install.sh | REPO_URL=https://github.com/<your-user>/<your-repo>.git bash
-```
-
-Optional overrides:
-
-- `BRANCH=<branch-name>`
-- `TARGET_DIR=<clone-path>`
-
-Example:
-
-```sh
-curl -fsSL https://raw.githubusercontent.com/<your-user>/<your-repo>/main/install.sh | REPO_URL=https://github.com/<your-user>/<your-repo>.git BRANCH=main TARGET_DIR=$HOME/.local/src/zsh-dotfiles bash
 ```
 
 ## Goals and Constraints
