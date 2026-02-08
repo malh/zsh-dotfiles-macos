@@ -12,7 +12,7 @@ if [[ -r "${HOMEBREW_PREFIX:-/opt/homebrew}/opt/antidote/share/antidote/antidote
   source "${HOMEBREW_PREFIX:-/opt/homebrew}/opt/antidote/share/antidote/antidote.zsh"
 fi
 
-if (( $+commands[antidote] )) && [[ -r "$plugins_file" ]]; then
+if (( $+functions[antidote] )) && [[ -r "$plugins_file" ]]; then
   # Rebuild static plugin script only when source list changes.
   if [[ ! -f "$bundle_file" || "$plugins_file" -nt "$bundle_file" ]]; then
     antidote bundle < "$plugins_file" >| "$bundle_file"
