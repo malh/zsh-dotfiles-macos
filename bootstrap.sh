@@ -112,6 +112,14 @@ backup_existing_config() {
   fi
 
   for legacy_file in "$HOME/.zshrc" "$HOME/.zprofile" "$HOME/.zlogin" "$HOME/.zlogout"; do
+    # Skip symlinks pointing into the config dir (ours, not legacy).
+    if [[ -L "$legacy_file" ]]; then
+      local link_target
+      link_target="$(readlink "$legacy_file" 2>/dev/null || true)"
+      if [[ "$link_target" == *".config/zsh"* ]]; then
+        continue
+      fi
+    fi
     if [[ -f "$legacy_file" ]]; then
       mkdir -p "$BACKUP_DIR/home"
       cp -a "$legacy_file" "$BACKUP_DIR/home/"
