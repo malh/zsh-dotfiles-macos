@@ -36,4 +36,5 @@ else
   git clone --branch "$BRANCH" --depth 1 "$REPO_URL" "$TARGET_DIR"
 fi
 
+echo "Running bootstrap..."
 bash "$TARGET_DIR/bootstrap.sh"
