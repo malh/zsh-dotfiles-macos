@@ -36,18 +36,25 @@ install_packages() {
     return
   fi
 
-  local pkg missing=()
+  log "brew" "Checking packages..."
+  local pkg missing=() installed=()
   for pkg in antidote starship neovim zsh-completions fzf; do
-    if ! brew list "$pkg" &>/dev/null; then
+    if brew list "$pkg" &>/dev/null; then
+      installed+=("$pkg")
+    else
       missing+=("$pkg")
     fi
   done
 
+  for pkg in "${installed[@]}"; do
+    printf "               ${_g}✓${_r} %s\n" "$pkg"
+  done
+
   if [[ ${#missing[@]} -gt 0 ]]; then
-    log "brew" "Installing ${missing[*]}..."
+    for pkg in "${missing[@]}"; do
+      printf "               ${_c}+${_r} %s ${_d}(installing)${_r}\n" "$pkg"
+    done
     brew install --quiet "${missing[@]}"
-  else
-    log "brew" "All packages already installed."
   fi
 }
 
