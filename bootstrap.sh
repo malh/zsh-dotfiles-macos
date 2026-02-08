@@ -78,6 +78,11 @@ install_repo_files() {
     --exclude "plan.md" \
     --exclude "bootstrap.sh" \
     --exclude ".zshenv.example" \
+    --exclude ".zsh_history" \
+    --exclude "backups.d" \
+    --exclude "conf.d/05-secrets.zsh" \
+    --exclude "conf.d/99-local.zsh" \
+    --exclude "antidote/.zsh_plugins.zsh" \
     "$ROOT_DIR/" "$TARGET_ZSH_DIR/" 2>&1 \
     | grep '^>f' | sed 's/^[^ ]* //' || true)"
 
