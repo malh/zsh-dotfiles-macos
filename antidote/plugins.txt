@@ -17,10 +17,6 @@ zsh-users/zsh-completions
 # Usage: Type any part of a previous command, then ↑/↓ to cycle through matches
 zsh-users/zsh-history-substring-search
 
-# Fast, feature-rich prompt theme with git integration
-# Usage: Run 'p10k configure' to customize after install
-romkatv/powerlevel10k
-
 # Automatically insert matching pairs of brackets/quotes
 # Usage: Automatic - type opening char, closing pair inserted; backspace removes both
 hlissner/zsh-autopair
