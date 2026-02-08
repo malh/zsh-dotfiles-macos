@@ -7,6 +7,11 @@
 plugins_file="$ZDOTDIR/antidote/plugins.txt"
 bundle_file="$ZDOTDIR/antidote/.zsh_plugins.zsh"
 
+# Source antidote from Homebrew (makes the `antidote` function available).
+if [[ -r "${HOMEBREW_PREFIX:-/opt/homebrew}/opt/antidote/share/antidote/antidote.zsh" ]]; then
+  source "${HOMEBREW_PREFIX:-/opt/homebrew}/opt/antidote/share/antidote/antidote.zsh"
+fi
+
 if (( $+commands[antidote] )) && [[ -r "$plugins_file" ]]; then
   # Rebuild static plugin script only when source list changes.
   if [[ ! -f "$bundle_file" || "$plugins_file" -nt "$bundle_file" ]]; then

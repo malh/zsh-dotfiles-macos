@@ -203,6 +203,12 @@ ensure_local_files() {
 build_antidote_bundle() {
   local plugins_file="$TARGET_ZSH_DIR/antidote/plugins.txt"
   local bundle_file="$TARGET_ZSH_DIR/antidote/.zsh_plugins.zsh"
+  local antidote_zsh="${HOMEBREW_PREFIX:-/opt/homebrew}/opt/antidote/share/antidote/antidote.zsh"
+
+  # Source antidote from Homebrew (makes the `antidote` function available).
+  if [[ -r "$antidote_zsh" ]]; then
+    source "$antidote_zsh"
+  fi
 
   if command -v antidote >/dev/null 2>&1 && [[ -r "$plugins_file" ]]; then
     # Generate static plugin loader for fast startup.
