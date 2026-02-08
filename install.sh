@@ -26,15 +26,17 @@ fi
 mkdir -p "$(dirname "$TARGET_DIR")"
 
 if [[ -d "$TARGET_DIR/.git" ]]; then
-  git -C "$TARGET_DIR" fetch origin
-  git -C "$TARGET_DIR" checkout "$BRANCH"
-  git -C "$TARGET_DIR" pull --ff-only origin "$BRANCH" 2>/dev/null || {
-    echo "Fast-forward not possible — resetting local $BRANCH to origin/$BRANCH"
-    git -C "$TARGET_DIR" reset --hard "origin/$BRANCH"
+  printf '[fetch] Updating repo...\n'
+  git -C "$TARGET_DIR" fetch origin -q
+  git -C "$TARGET_DIR" checkout "$BRANCH" -q
+  git -C "$TARGET_DIR" pull --ff-only origin "$BRANCH" -q 2>/dev/null || {
+    printf '[fetch] Fast-forward not possible — resetting to origin/%s\n' "$BRANCH"
+    git -C "$TARGET_DIR" reset --hard "origin/$BRANCH" -q
   }
 else
-  git clone --branch "$BRANCH" --depth 1 "$REPO_URL" "$TARGET_DIR"
+  printf '[clone] Cloning into %s...\n' "$TARGET_DIR"
+  git clone --branch "$BRANCH" --depth 1 -q "$REPO_URL" "$TARGET_DIR"
 fi
 
-echo "Running bootstrap..."
+printf '[bootstrap] Running bootstrap...\n\n'
 bash "$TARGET_DIR/bootstrap.sh"
