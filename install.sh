@@ -11,6 +11,10 @@ REPO_URL="${REPO_URL:-https://github.com/malh/zsh-dotfiles-macos.git}"
 BRANCH="${BRANCH:-main}"
 TARGET_DIR="${TARGET_DIR:-$HOME/.local/src/zsh-dotfiles}"
 
+_c="\033[1;34m" _w="\033[1;33m" _r="\033[0m"
+log()  { printf "${_c}%-12s${_r} %s\n" "[$1]" "$2"; }
+warn() { printf "${_w}%-12s${_r} %s\n" "[$1]" "$2"; }
+
 if [[ -z "$REPO_URL" ]]; then
   echo "REPO_URL is required."
   echo "Example:"
@@ -26,17 +30,18 @@ fi
 mkdir -p "$(dirname "$TARGET_DIR")"
 
 if [[ -d "$TARGET_DIR/.git" ]]; then
-  printf '[fetch] Updating repo...\n'
+  log "fetch" "Updating repo..."
   git -C "$TARGET_DIR" fetch origin -q 2>&1 | grep -v '^remote:' || true
   git -C "$TARGET_DIR" checkout "$BRANCH" -q 2>/dev/null
   git -C "$TARGET_DIR" pull --ff-only origin "$BRANCH" -q 2>/dev/null || {
-    printf '[fetch] Fast-forward not possible — resetting to origin/%s\n' "$BRANCH"
+    warn "fetch" "Fast-forward not possible — resetting to origin/$BRANCH"
     git -C "$TARGET_DIR" reset --hard "origin/$BRANCH" -q 2>/dev/null
   }
 else
-  printf '[clone] Cloning into %s...\n' "$TARGET_DIR"
+  log "clone" "Cloning into $TARGET_DIR..."
   git clone --branch "$BRANCH" --depth 1 -q "$REPO_URL" "$TARGET_DIR" 2>/dev/null
 fi
 
-printf '[bootstrap] Running bootstrap...\n\n'
+log "bootstrap" "Running bootstrap..."
+printf '\n'
 bash "$TARGET_DIR/bootstrap.sh"

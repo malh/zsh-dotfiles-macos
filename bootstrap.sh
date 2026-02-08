@@ -17,20 +17,21 @@ MERGE_REPORT="$BACKUP_DIR/merge-suggestions.md"
 BACKUP_INDEX_DIR="$TARGET_ZSH_DIR/backups.d"
 BACKUP_CREATED=0
 
+_c="\033[1;34m" _g="\033[1;32m" _d="\033[2m" _r="\033[0m"
+log() { printf "${_c}%-12s${_r} %s\n" "[$1]" "$2"; }
+
 ensure_brew() {
-  # Homebrew is required for package installation and fzf helpers.
   if command -v brew >/dev/null 2>&1; then
     return
   fi
 
-  printf '[brew]  Installing Homebrew...\n'
+  log "brew" "Installing Homebrew..."
   /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 }
 
 install_packages() {
-  # Prefer Brewfile if present for team-managed package definitions.
   if [[ -f "$ROOT_DIR/Brewfile" ]]; then
-    printf '[brew]  Installing packages from Brewfile...\n'
+    log "brew" "Installing packages from Brewfile..."
     brew bundle --file "$ROOT_DIR/Brewfile" --quiet
     return
   fi
@@ -43,10 +44,10 @@ install_packages() {
   done
 
   if [[ ${#missing[@]} -gt 0 ]]; then
-    printf '[brew]  Installing %s...\n' "${missing[*]}"
+    log "brew" "Installing ${missing[*]}..."
     brew install --quiet "${missing[@]}"
   else
-    printf '[brew]  All packages already installed.\n'
+    log "brew" "All packages already installed."
   fi
 }
 
@@ -61,8 +62,7 @@ ensure_dirs() {
 }
 
 install_repo_files() {
-  printf '[sync]  Syncing config to %s...\n' "$TARGET_ZSH_DIR"
-  # Sync only runtime config files; leave docs and bootstrap sources in repo.
+  log "sync" "Syncing config to $TARGET_ZSH_DIR..."
   rsync -a --delete \
     --exclude ".git" \
     --exclude ".gitignore" \
@@ -74,7 +74,6 @@ install_repo_files() {
 }
 
 install_zshenv() {
-  # Keep ~/.zshenv as the minimal handoff into XDG/ZDOTDIR config.
   cp "$ROOT_DIR/.zshenv.example" "$TARGET_ZSHENV"
 }
 
@@ -106,7 +105,7 @@ backup_existing_config() {
   if [[ "$BACKUP_CREATED" -eq 0 ]]; then
     rmdir "$BACKUP_DIR" 2>/dev/null || true
   else
-    printf '[backup] Saved existing config to %s\n' "$BACKUP_DIR"
+    log "backup" "Saved existing config."
   fi
 }
 
@@ -212,9 +211,8 @@ build_antidote_bundle() {
   local bundle_file="$TARGET_ZSH_DIR/antidote/.zsh_plugins.zsh"
   local antidote_zsh="${HOMEBREW_PREFIX:-/opt/homebrew}/opt/antidote/share/antidote/antidote.zsh"
 
-  # antidote is a zsh function, so run bundling through zsh (not bash).
   if [[ -r "$antidote_zsh" ]] && [[ -r "$plugins_file" ]]; then
-    printf '[plugins] Bundling antidote plugins...\n'
+    log "plugins" "Bundling antidote plugins..."
     zsh -c "source '$antidote_zsh' && antidote bundle < '$plugins_file' > '$bundle_file'" 2>&1 \
       | grep -v '^#' || true
   fi
@@ -225,7 +223,7 @@ install_fzf_extras() {
     local fzf_install
     fzf_install="$(brew --prefix)/opt/fzf/install"
     if [[ -x "$fzf_install" ]]; then
-      printf '[fzf]   Installing key-bindings and completions...\n'
+      log "fzf" "Installing key-bindings and completions..."
       "$fzf_install" --no-bash --no-fish --key-bindings --completion --no-update-rc >/dev/null 2>&1 || true
     fi
   fi
@@ -242,8 +240,7 @@ expose_backup_in_zdotdir() {
 }
 
 validate() {
-  printf '[check] Validating syntax...\n'
-  # Validate syntax after install so broken configs fail fast.
+  log "check" "Validating syntax..."
   ZDOTDIR="$TARGET_ZSH_DIR" zsh -n "$TARGET_ZSH_DIR/.zshrc" "$TARGET_ZSH_DIR/conf.d/"*.zsh
 }
 
@@ -251,12 +248,12 @@ print_summary() {
   printf '\n'
 
   if [[ "$BACKUP_CREATED" -eq 1 ]]; then
-    printf '  Backup:     %s\n' "$BACKUP_INDEX_DIR/latest"
-    printf '  Merge tips: %s\n' "$MERGE_REPORT"
+    printf "  ${_d}Backup:${_r}     %s\n" "$BACKUP_INDEX_DIR/latest"
+    printf "  ${_d}Merge tips:${_r} %s\n" "$MERGE_REPORT"
   fi
 
-  printf '  Config:     %s\n' "$TARGET_ZSH_DIR"
-  printf '\n  Done! Run: exec zsh -l\n\n'
+  printf "  ${_d}Config:${_r}     %s\n" "$TARGET_ZSH_DIR"
+  printf "\n  ${_g}Done!${_r} Run: exec zsh -l\n\n"
 }
 
 main() {
