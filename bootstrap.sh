@@ -205,14 +205,9 @@ build_antidote_bundle() {
   local bundle_file="$TARGET_ZSH_DIR/antidote/.zsh_plugins.zsh"
   local antidote_zsh="${HOMEBREW_PREFIX:-/opt/homebrew}/opt/antidote/share/antidote/antidote.zsh"
 
-  # Source antidote from Homebrew (makes the `antidote` function available).
-  if [[ -r "$antidote_zsh" ]]; then
-    source "$antidote_zsh"
-  fi
-
-  if command -v antidote >/dev/null 2>&1 && [[ -r "$plugins_file" ]]; then
-    # Generate static plugin loader for fast startup.
-    antidote bundle < "$plugins_file" > "$bundle_file"
+  # antidote is a zsh function, so run bundling through zsh (not bash).
+  if [[ -r "$antidote_zsh" ]] && [[ -r "$plugins_file" ]]; then
+    zsh -c "source '$antidote_zsh' && antidote bundle < '$plugins_file' > '$bundle_file'"
   fi
 }
 
