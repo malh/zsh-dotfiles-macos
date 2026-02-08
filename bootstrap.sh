@@ -96,6 +96,8 @@ install_repo_files() {
 }
 
 install_zshenv() {
+  # Remove stale symlinks (e.g. -> .dotfiles/zsh/.zshenv) so cp creates a real file.
+  [[ -L "$TARGET_ZSHENV" ]] && rm "$TARGET_ZSHENV"
   cp "$ROOT_DIR/.zshenv.example" "$TARGET_ZSHENV"
 }
 
