@@ -63,14 +63,24 @@ ensure_dirs() {
 
 install_repo_files() {
   log "sync" "Syncing config to $TARGET_ZSH_DIR..."
-  rsync -a --delete \
+  local changes
+  changes="$(rsync -ai --delete \
     --exclude ".git" \
     --exclude ".gitignore" \
     --exclude "README.md" \
     --exclude "plan.md" \
     --exclude "bootstrap.sh" \
     --exclude ".zshenv.example" \
-    "$ROOT_DIR/" "$TARGET_ZSH_DIR/"
+    "$ROOT_DIR/" "$TARGET_ZSH_DIR/" 2>&1 \
+    | grep '^>f' | sed 's/^[^ ]* //' || true)"
+
+  if [[ -n "$changes" ]]; then
+    while IFS= read -r file; do
+      printf "             ${_d}updated${_r}  %s\n" "$file"
+    done <<< "$changes"
+  else
+    printf "             ${_d}no changes${_r}\n"
+  fi
 }
 
 install_zshenv() {
@@ -245,14 +255,31 @@ validate() {
 }
 
 print_summary() {
+  local tilde_zsh="${TARGET_ZSH_DIR/#$HOME/~}"
+
   printf '\n'
+  printf "  ${_c}Installed layout:${_r}\n"
+  printf "  ~/.zshenv                        ${_d}-> sets ZDOTDIR${_r}\n"
+  printf "  %s/\n" "$tilde_zsh"
+  printf "    .zshrc                         ${_d}-> module dispatcher${_r}\n"
+  printf "    conf.d/\n"
+  printf "      00-env.zsh                   ${_d}-> env vars, XDG${_r}\n"
+  printf "      05-secrets.zsh               ${_d}-> private tokens${_r}\n"
+  printf "      10-options.zsh               ${_d}-> setopt, history${_r}\n"
+  printf "      20-path.zsh                  ${_d}-> PATH, fpath${_r}\n"
+  printf "      30-plugins.zsh               ${_d}-> antidote + compinit${_r}\n"
+  printf "      50-aliases.zsh               ${_d}-> aliases${_r}\n"
+  printf "      70-tools.zsh                 ${_d}-> tool init (fzf, etc)${_r}\n"
+  printf "      99-local.zsh                 ${_d}-> machine overrides${_r}\n"
+  printf "    antidote/plugins.txt           ${_d}-> plugin list${_r}\n"
+  printf "    starship/starship.toml         ${_d}-> prompt theme${_r}\n"
 
   if [[ "$BACKUP_CREATED" -eq 1 ]]; then
+    printf '\n'
     printf "  ${_d}Backup:${_r}     %s\n" "$BACKUP_INDEX_DIR/latest"
     printf "  ${_d}Merge tips:${_r} %s\n" "$MERGE_REPORT"
   fi
 
-  printf "  ${_d}Config:${_r}     %s\n" "$TARGET_ZSH_DIR"
   printf "\n  ${_g}Done!${_r} Run: exec zsh -l\n\n"
 }
 
