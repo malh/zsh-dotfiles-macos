@@ -1,56 +1,83 @@
 # ---
 # file: "starship/starship.toml"
-# purpose: "Prompt configuration for Starship — based on the pure preset."
+# purpose: "Two-line powerline prompt with pure-style input line."
 # format: "toml"
 # ---
 
 "$schema" = 'https://starship.rs/config-schema.json'
 
 format = """
-$username\
-$hostname\
+[](fg:blue)\
 $directory\
+[](fg:blue bg:green)\
 $git_branch\
 $git_state\
+[](fg:green bg:yellow)\
 $git_status\
-$cmd_duration\
-$line_break\
+[](fg:yellow bg:cyan)\
 $python\
+$nodejs\
+$rust\
+$golang\
+[](fg:cyan bg:bright-black)\
+$cmd_duration\
+[](fg:bright-black)\
+$fill\
+$line_break\
 $character"""
 
+[fill]
+symbol = " "
+
 [directory]
-style = "blue"
+format = "[ $path ](bold bg:blue fg:black)"
+truncation_length = 3
+truncation_symbol = ".../"
 
 [character]
-success_symbol = "[❯](purple)"
-error_symbol = "[❯](red)"
-vimcmd_symbol = "[❮](green)"
+success_symbol = "[>](bold purple)"
+error_symbol = "[>](bold red)"
+vimcmd_symbol = "[<](bold green)"
 
 [git_branch]
-format = "[$branch]($style)"
-style = "bright-black"
+format = "[  $branch ](bold bg:green fg:black)"
 
 [git_status]
-format = "[[(*$conflicted$untracked$modified$staged$renamed$deleted)](218) ($ahead_behind$stashed)]($style)"
-style = "cyan"
-conflicted = "​"
-untracked = "​"
-modified = "​"
-staged = "​"
-renamed = "​"
-deleted = "​"
-stashed = "≡"
+format = "[ $all_status$ahead_behind ](bold bg:yellow fg:black)"
+conflicted = " "
+untracked = " "
+modified = " "
+staged = " "
+renamed = " "
+deleted = " "
+stashed = " "
+ahead = " ${count}"
+behind = " ${count}"
+diverged = " ${ahead_count} ${behind_count}"
 
 [git_state]
-format = '\([$state( $progress_current/$progress_total)]($style)\) '
-style = "bright-black"
+format = "[ $state $progress_current/$progress_total ](bold bg:green fg:black)"
 
 [cmd_duration]
-format = "[$duration]($style) "
-style = "yellow"
+format = "[  $duration ](bold bg:bright-black fg:white)"
+min_time = 2_000
 
 [python]
-format = "[$virtualenv]($style) "
-style = "bright-black"
+format = "[  $virtualenv ](bold bg:cyan fg:black)"
 detect_extensions = []
 detect_files = []
+
+[nodejs]
+format = "[  $version ](bold bg:cyan fg:black)"
+detect_extensions = []
+detect_files = ["package.json"]
+
+[rust]
+format = "[  $version ](bold bg:cyan fg:black)"
+detect_extensions = []
+detect_files = ["Cargo.toml"]
+
+[golang]
+format = "[  $version ](bold bg:cyan fg:black)"
+detect_extensions = []
+detect_files = ["go.mod"]
