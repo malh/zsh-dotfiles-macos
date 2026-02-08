@@ -9,6 +9,7 @@ alias ls='ls -G'
 alias la='ls -la'
 alias ll='ls -lh'
 
+# Redirect vim to Neovim when installed.
 if (( $+commands[nvim] )); then
   alias vim='nvim'
 fi

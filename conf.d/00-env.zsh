@@ -24,5 +24,8 @@ export XDG_STATE_HOME="${XDG_STATE_HOME:-$HOME/.local/state}"
 # Ensure cache/state directories exist for zsh runtime files.
 mkdir -p "$XDG_CACHE_HOME/zsh" "$XDG_STATE_HOME/zsh"
 
+# Point Starship at the repo-managed config rather than its default location.
 export STARSHIP_CONFIG="${STARSHIP_CONFIG:-$ZDOTDIR/starship/starship.toml}"
+
+# Store history under XDG state, not $HOME.
 export HISTFILE="${HISTFILE:-$XDG_STATE_HOME/zsh/history}"
